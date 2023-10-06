@@ -4,6 +4,7 @@ import './ShelfPage.css';
 
 function ShelfPage() {
   const [shelfList, setShelfList] = useState([]);
+  const [itemName, setItemName] = useState('');
 
   useEffect(() => {
     fetchShelf();
@@ -18,10 +19,25 @@ function ShelfPage() {
     });
   }
 
+  const addItem = (event) => {
+    event.preventDefault();
+    axios.post('api/shelf', { description: itemName})
+    .then(response => fetchShelf())
+    .catch( error => {
+      console.log(error);
+      alert('Something went wrong.');
+    });
+  }
+
   return (
     <div className="container">
       <h2>Shelf</h2>
       <p>All of the available items can be seen here.</p>
+      <form onSubmit={addItem}>
+        Name: <input type="text" value={itemName} onChange={event => setItemName(event.target.value)} />
+        <br></br>
+        <button>Submit</button>
+      </form>
       {
         shelfList.length === 0 && (
           <div>No items on the shelf</div>
